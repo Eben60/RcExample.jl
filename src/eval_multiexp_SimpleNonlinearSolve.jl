@@ -1,4 +1,4 @@
-using RelaxationExample
+using RelaxationExample, GivEmExel
 
 using Plots, XLSX, DataFrames
 # plotlyjs()
@@ -6,15 +6,11 @@ using Plots, XLSX, DataFrames
 fname = "data/RelaxationExampleData.xlsx"
 fl = joinpath(@__DIR__, "..", fname)
 
-@assert isfile(fl)
-datatablename = "data"
-df = DataFrame(XLSX.readtable(fl, datatablename; infer_eltypes=true))
+(;df_setup, df_exp) = read_xl_paramtables(fl);
+(;nt) = merge_params(df_exp, df_setup, 1);
 
-ts = df[!, :ts];
-ys = df[!, :ys];
+pst = exper_paramsets((;), df_exp, df_setup);
 
-pl0 = plot(ts, ys)
-# display(pl0)
+results = proc_data(fl, nothing, pst);
 
-t_start, t_stop = 6.0, 12.0
-
+# (;a, τ, sol, fit, pl0, pl1) = proc_dataset(fl);
