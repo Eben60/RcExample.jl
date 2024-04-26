@@ -14,4 +14,5 @@ fl = joinpath(@__DIR__, "..", fname)
 pst = exper_paramsets((;), df_exp, df_setup);
 
 (;results, results_df) = proc_data(fl, nothing, pst);
+df2save = prepare_xl(results_df);
 ;
