@@ -3,7 +3,7 @@ module RelaxationExample
 using GivEmExel
 using Plots, XLSX, DataFrames, SimpleNonlinearSolve
 
-export timerange, nl_lsq_fit, expmodel
+export timerange, nl_lsq_fit, expmodel, proc_dataspan
 
 function timerange(df0, t1, t2)
     df = subset(df0, :ts => x -> (x.>t1).&(x.<t2))
@@ -35,5 +35,24 @@ function expmodel(x, u, t₀=0)
     τ = u[2]
     return a * exp(-(x-t₀)/τ) # + y0 
 end
+
+function proc_dataspan(df, t_start, t_stop)
+
+    (; ts, ys) = timerange(df, t_start, t_stop);
+
+    # aᵢ, τᵢ, t₀ᵢ = 1.0, 2.0, t_start
+    aᵢ = ys[1]
+    τᵢ = 1.5 # (t_stop - t_start)/3
+    t₀ᵢ = t_start
+
+    (;sol, fit) = nl_lsq_fit(expmodel, [aᵢ, τᵢ], ts, ys, t₀ᵢ)
+
+    a, τ = sol.u
+
+    pl1 = plot(ts, [ys, fit])
+
+    return (;a, τ, sol, fit, pl1)
+end
+
 
 end # module RelaxationExample
