@@ -12,8 +12,8 @@ DATATABLENAME = "data"
 
 function timerange(df0, t1, t2)
     df = subset(df0, :ts => x -> (x.>t1).&(x.<t2))
-    ts = df[!, :ts];
-    ys = df[!, :ys];
+    ts = Float64.(df[!, :ts]);
+    ys = Float64.(df[!, :ys]);
     return (; ts, ys)
 end
 
@@ -67,22 +67,29 @@ function proc_data(xlfile, unusedfile, paramsets)
     (; df, pl0) = readdata(xlfile)
     results = []
     results_df = []
-    for pm in paramsets
-        (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
-        rslt = proc_dataspan(df, t_start, t_stop)
-        (;a, τ, sol, pl1) = rslt
-        finalize_plot!(pl1, pm)
-        rs = (;a, τ, sol, pl1)
-        a *= Vunit
-        τ *= timeunit
-        c = (τ / R) 
-        c = c |> Cunit 
-        d = calc_thickness(c, ϵ, area)
-        rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
-        push!(results, rs)
-        push!(results_df, rs_row)
+    errors = []
+    for (i, pm) in pairs(paramsets)
+            (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
+        try
+            rslt = proc_dataspan(df, t_start, t_stop)
+            (;a, τ, sol, pl1) = rslt
+            finalize_plot!(pl1, pm)
+            rs = (;a, τ, sol, pl1)
+            a *= Vunit
+            τ *= timeunit
+            c = (τ / R) 
+            c = c |> Cunit 
+            d = calc_thickness(c, ϵ, area)
+            rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
+            push!(results, rs)
+            push!(results_df, rs_row)
+        catch exceptn
+            push!(errors, (;row=i, comment, exceptn))
+            # rethrow(exceptn)
+        end
+
     end
-    return (results, results_df=DataFrame(results_df ))
+    return (results, errors, results_df=DataFrame(results_df ))
 end
 
 calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
