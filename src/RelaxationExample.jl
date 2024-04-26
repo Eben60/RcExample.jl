@@ -1,9 +1,9 @@
 module RelaxationExample
 
 using GivEmExel
-using Plots, XLSX, DataFrames, NonlinearSolve
+using Plots, XLSX, DataFrames, NonlinearSolve, Unitful
 
-export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data # , proc_dataset
+export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, anyfy_col! # , proc_dataset
 
 DATATABLENAME = "data"
 
@@ -59,12 +59,26 @@ function readdata(fl)
     return (; df, pl0)
 end
 
-# function proc_dataset(fl)
-#     (; df, pl0) = readdata(fl)
-#     t_start, t_stop = 6.0, 12.0
-#     (;a, τ, sol, fit, pl1) = proc_dataspan(df, t_start, t_stop)
-#     return (;a, τ, sol, fit, pl0, pl1) 
-# end
+function proc_data(xlfile, unusedfile, paramsets)
+    (; df, pl0) = readdata(xlfile)
+    results = []
+    results_df = []
+    for pm in paramsets
+        (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
+        rslt = proc_dataspan(df, t_start, t_stop)
+        (;a, τ, sol, pl1) = rslt
+        finalize_plot!(pl1, pm)
+        rs = (;a, τ, sol, pl1)
+        a *= Vunit
+        τ *= timeunit
+        c = (τ / R) 
+        c = c |> Cunit 
+        rs_row = (;no, a, τ, c, R, ϵ, comment, t_start, t_stop)
+        push!(results, rs)
+        push!(results_df, rs_row)
+    end
+    return (results, results_df=DataFrame(results_df ))
+end
 
 function finalize_plot!(pl, params)
     (; Vunit, timeunit, plot_annotation) = params
@@ -80,20 +94,9 @@ function finalize_plot!(pl, params)
     return pl
 end
 
-
-
-function proc_data(xlfile, unusedfile, paramsets)
-    (; df, pl0) = readdata(xlfile)
-    results = []
-    for pm in paramsets
-        (; area, Vunit, timeunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
-        rslt = proc_dataspan(df, t_start, t_stop)
-        (;a, τ, sol, pl1) = rslt
-        finalize_plot!(pl1, pm)
-        rs = (;a, τ, sol, pl1) 
-        push!(results, rs)
-    end
-    return results
+function anyfy_col!(df, cname) 
+    df[!, cname] = Vector{Any}(df[!, cname])
+    return nothing
 end
 
 end # module RelaxationExample
