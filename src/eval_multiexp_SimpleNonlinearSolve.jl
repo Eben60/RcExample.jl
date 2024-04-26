@@ -6,6 +6,8 @@ using Plots, XLSX, DataFrames
 fname = "data/RelaxationExampleData.xlsx"
 fl = joinpath(@__DIR__, "..", fname)
 
+
+
 (;df_setup, df_exp) = read_xl_paramtables(fl);
 # (;nt) = merge_params(df_exp, df_setup, 1);
 

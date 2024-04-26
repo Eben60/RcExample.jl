@@ -3,6 +3,8 @@ module RelaxationExample
 using GivEmExel
 using Plots, XLSX, DataFrames, NonlinearSolve, Unitful
 
+using Unitful: ϵ0
+
 export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
 
 DATATABLENAME = "data"
@@ -40,6 +42,8 @@ function expmodel(x, u, t₀=0)
 end
 
 function proc_dataspan(df, t_start, t_stop)
+    t_start = t_start |> ustrip
+    t_stop = t_stop |> ustrip
     (; ts, ys) = timerange(df, t_start, t_stop);
     aᵢ = (ys[1])
     τᵢ = (t_stop - t_start) / 2
@@ -73,12 +77,15 @@ function proc_data(xlfile, unusedfile, paramsets)
         τ *= timeunit
         c = (τ / R) 
         c = c |> Cunit 
-        rs_row = (;no, a, τ, c, R, ϵ, comment, t_start, t_stop)
+        d = calc_thickness(c, ϵ, area)
+        rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
         push!(results, rs)
         push!(results_df, rs_row)
     end
     return (results, results_df=DataFrame(results_df ))
 end
+
+calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
 
 function finalize_plot!(pl, params)
     (; Vunit, timeunit, plot_annotation) = params
