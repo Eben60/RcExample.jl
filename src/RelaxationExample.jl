@@ -1,7 +1,7 @@
 module RelaxationExample
 
 using GivEmExel
-using Plots, XLSX, DataFrames, SimpleNonlinearSolve
+using Plots, XLSX, DataFrames, NonlinearSolve
 
 export timerange, nl_lsq_fit, expmodel, proc_dataspan
 
@@ -23,7 +23,7 @@ function nl_lsq_fit(model, u0, xdata, ydata, p)
 
     prob = NonlinearLeastSquaresProblem(
         NonlinearFunction(lossfn!, resid_prototype = similar(ydata)), u0, data)
-    sol = solve(prob, SimpleNewtonRaphson())
+    sol = solve(prob)
     u = sol.u
     fit = model.(xdata, Ref(u), Ref(p))
     return (;sol, fit)
@@ -37,20 +37,13 @@ function expmodel(x, u, t₀=0)
 end
 
 function proc_dataspan(df, t_start, t_stop)
-
     (; ts, ys) = timerange(df, t_start, t_stop);
-
-    # aᵢ, τᵢ, t₀ᵢ = 1.0, 2.0, t_start
-    aᵢ = ys[1]
-    τᵢ = 1.5 # (t_stop - t_start)/3
+    aᵢ = (ys[1])
+    τᵢ = (t_stop - t_start) / 2
     t₀ᵢ = t_start
-
     (;sol, fit) = nl_lsq_fit(expmodel, [aᵢ, τᵢ], ts, ys, t₀ᵢ)
-
     a, τ = sol.u
-
     pl1 = plot(ts, [ys, fit])
-
     return (;a, τ, sol, fit, pl1)
 end
 
