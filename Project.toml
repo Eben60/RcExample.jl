@@ -1,0 +1,13 @@
+name = "RelaxationExample"
+uuid = "860fe72d-ead5-40a6-888e-a6a0dafefe10"
+authors = ["Ben Elkin <8xe8n-cm@online.de>"]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+GivEmExel = "dcf505f5-2bf4-45cb-8fef-5f56a3c0e7fc"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+SimpleNonlinearSolve = "727e6d20-b764-4bd8-a329-72de5adea6c7"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
