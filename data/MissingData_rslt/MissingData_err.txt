@@ -1,3 +1,3 @@
 row = 3: third discharge – 3
-Errored: MethodError(Float64, (missing,), 0x0000000000007bee) 
+Errored: MethodError(Float64, (missing,), 0x0000000000007c29) 
 

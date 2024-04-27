@@ -6,7 +6,7 @@ using Plots, XLSX, DataFrames
 f = "data/MissingData.xlsx";
 
 # f = "data/RelaxationExampleData.xlsx"
-# f = "data/BrokenData.xlsx";
+f = "data/BrokenData.xlsx";
 fl = joinpath(@__DIR__, "..", f);
 
 
@@ -26,3 +26,4 @@ if !isempty(results_df)
 end
 
 errored = write_errors(errf, errors)
+saveplots(results, rslt_dir; pst[1]...)

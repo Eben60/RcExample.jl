@@ -5,7 +5,7 @@ using Plots, XLSX, DataFrames, NonlinearSolve, Unitful
 
 using Unitful: ϵ0
 
-export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
+export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, saveplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
 
 DATATABLENAME = "data"
 
@@ -50,8 +50,8 @@ function proc_dataspan(df, t_start, t_stop)
     t₀ᵢ = t_start
     (;sol, fit) = nl_lsq_fit(expmodel, [aᵢ, τᵢ], ts, ys, t₀ᵢ)
     a, τ = sol.u
-    pl1 = plot(ts, [ys, fit]; label = ["experiment" "fit"])
-    return (;a, τ, sol, fit, pl1)
+    pl = plot(ts, [ys, fit]; label = ["experiment" "fit"])
+    return (;a, τ, sol, fit, pl)
 end
 
 
@@ -73,9 +73,9 @@ function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
                 (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
             try
                 rslt = proc_dataspan(df, t_start, t_stop)
-                (;a, τ, sol, pl1) = rslt
-                finalize_plot!(pl1, pm)
-                rs = (;a, τ, sol, pl1)
+                (;a, τ, sol, pl) = rslt
+                finalize_plot!(pl, pm)
+                rs = (;dataset=i, no, a, τ, sol, pl, plot_annotation)
                 a *= Vunit
                 τ *= timeunit
                 c = (τ / R) 
@@ -111,6 +111,17 @@ function finalize_plot!(pl, params)
         title = "$plot_annotation",
         )
     return pl
+end
+
+function saveplots(results, rslt_dir; plotformat = "png", kwargs...)
+    for rs in results
+        (; dataset, no, pl, plot_annotation) = rs
+        prefix = dataset==no ? "fig$no" : "fig$dataset-$no"
+        fname = "$(prefix)_$plot_annotation.$plotformat"
+        fl = joinpath(rslt_dir, fname)
+        savefig(pl, fl)
+    end
+    return nothing
 end
 
 end # module RelaxationExample
