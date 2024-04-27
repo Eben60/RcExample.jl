@@ -63,33 +63,38 @@ function readdata(fl)
     return (; df, pl0)
 end
 
-function proc_data(xlfile, unusedfile, paramsets)
-    (; df, pl0) = readdata(xlfile)
+function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
     results = []
     results_df = []
     errors = []
-    for (i, pm) in pairs(paramsets)
-            (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
-        try
-            rslt = proc_dataspan(df, t_start, t_stop)
-            (;a, τ, sol, pl1) = rslt
-            finalize_plot!(pl1, pm)
-            rs = (;a, τ, sol, pl1)
-            a *= Vunit
-            τ *= timeunit
-            c = (τ / R) 
-            c = c |> Cunit 
-            d = calc_thickness(c, ϵ, area)
-            rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
-            push!(results, rs)
-            push!(results_df, rs_row)
-        catch exceptn
-            push!(errors, (;row=i, comment, exceptn))
-            # rethrow(exceptn)
+    try
+        (; df, pl0) = readdata(xlfile)
+        for (i, pm) in pairs(paramsets)
+                (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
+            try
+                rslt = proc_dataspan(df, t_start, t_stop)
+                (;a, τ, sol, pl1) = rslt
+                finalize_plot!(pl1, pm)
+                rs = (;a, τ, sol, pl1)
+                a *= Vunit
+                τ *= timeunit
+                c = (τ / R) 
+                c = c |> Cunit 
+                d = calc_thickness(c, ϵ, area)
+                rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
+                push!(results, rs)
+                push!(results_df, rs_row)
+            catch exceptn
+                push!(errors, (;row=i, comment, exceptn))
+                throwonerr && rethrow(exceptn)
+            end
         end
-
+        results_df=DataFrame(results_df)
+    catch exceptn
+        push!(errors,(;row=-1, comment="error opening of processing data file", exceptn))
+        throwonerr && rethrow(exceptn)
     end
-    return (results, errors, results_df=DataFrame(results_df ))
+    return (; results, errors, results_df)
 end
 
 calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"

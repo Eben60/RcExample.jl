@@ -1,3 +1,3 @@
-row = 3: third discharge – 3
-Errored: MethodError(Float64, (missing,), 0x0000000000007be0) 
+row = -1: error opening of processing data file
+Errored: ErrorException("/Users/elk/Julia/RelaxationExample.jl/src/../data/BrokenData.xlsx does not have a Worksheet named data.") 
 
