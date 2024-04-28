@@ -5,7 +5,7 @@ using Plots, XLSX, DataFrames, NonlinearSolve, Unitful
 
 using Unitful: ϵ0
 
-export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, saveplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
+export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
 
 DATATABLENAME = "data"
 
@@ -75,7 +75,7 @@ function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
                 rslt = proc_dataspan(df, t_start, t_stop)
                 (;a, τ, sol, pl) = rslt
                 finalize_plot!(pl, pm)
-                rs = (;dataset=i, no, a, τ, sol, pl, plot_annotation)
+                rs = (;subset=i, no, a, τ, sol, pl, plot_annotation)
                 a *= Vunit
                 τ *= timeunit
                 c = (τ / R) 
@@ -113,13 +113,22 @@ function finalize_plot!(pl, params)
     return pl
 end
 
+getplots(itr) = [k => v for (k, v) in pairs(itr) if v isa Plots.Plot]
+
+
 function saveplots(results, rslt_dir; plotformat = "png", kwargs...)
     for rs in results
-        (; dataset, no, pl, plot_annotation) = rs
-        prefix = dataset==no ? "fig$no" : "fig$dataset-$no"
-        fname = "$(prefix)_$plot_annotation.$plotformat"
-        fl = joinpath(rslt_dir, fname)
-        savefig(pl, fl)
+        (; subset, no, plot_annotation) = rs
+        allplots = getplots(rs)
+        singleplot = length(allplots) == 1
+        for (k, v) in allplots
+            pl = v
+            prefix = subset==no ? "fig$no" : "fig$subset-$no"
+            singleplot || (prefix *= "_$(k)_")
+            fname = "$(prefix)_$plot_annotation.$plotformat"
+            fl = joinpath(rslt_dir, fname)
+            savefig(pl, fl)
+        end
     end
     return nothing
 end

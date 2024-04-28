@@ -5,8 +5,8 @@ using Plots, XLSX, DataFrames
 
 f = "data/MissingData.xlsx";
 
-# f = "data/RelaxationExampleData.xlsx"
-f = "data/BrokenData.xlsx";
+f = "data/RelaxationExampleData.xlsx"
+# f = "data/BrokenData.xlsx";
 fl = joinpath(@__DIR__, "..", f);
 
 
@@ -26,4 +26,11 @@ if !isempty(results_df)
 end
 
 errored = write_errors(errf, errors)
+
+pl1 = results[1].pl
+pl2 = results[2].pl
+pl3 = results[3].pl;
+
+pls = (;pl1, pl2, pl3, a=3)
+getplots(pls)
 saveplots(results, rslt_dir; pst[1]...)
