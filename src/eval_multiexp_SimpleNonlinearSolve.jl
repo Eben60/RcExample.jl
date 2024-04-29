@@ -1,6 +1,7 @@
-using RelaxationExample, GivEmExel, GivEmExel.SavingResults
+using Unitful, DataFrames, XLSX, Plots
+using GivEmExel #, GivEmExel.SavingResults
+using RelaxationExample
 
-using Plots, XLSX, DataFrames
 # plotlyjs()
 
 f = "data/MissingData.xlsx";

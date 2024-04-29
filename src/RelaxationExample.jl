@@ -1,7 +1,9 @@
 module RelaxationExample
 
+using Plots, XLSX, DataFrames, Unitful
 using GivEmExel
-using Plots, XLSX, DataFrames, NonlinearSolve, Unitful
+
+using NonlinearSolve
 
 using Unitful: ϵ0
 
