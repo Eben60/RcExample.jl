@@ -115,25 +115,4 @@ function finalize_plot!(pl, params)
     return pl
 end
 
-getplots(itr) = [k => v for (k, v) in pairs(itr) if v isa Plots.Plot]
-
-
-function saveplots(rs, rslt_dir; plotformat = "png", kwargs...)
-    # rs = Dict(pairs(rs))
-    subset = get(rs, :subset, 0)
-    no = get(rs, :no, subset)
-    plot_annotation = get(rs, :plot_annotation, "")
-    allplots = getplots(rs)
-    singleplot = length(allplots) == 1
-    for (k, v) in allplots
-        pl = v
-        prefix = subset==no ? "fig$no" : "fig$subset-$no"
-        singleplot || (prefix *= "_$(k)_")
-        fname = "$(prefix)_$plot_annotation.$plotformat"
-        fl = joinpath(rslt_dir, fname)
-        savefig(pl, fl)
-    end
-    return nothing
-end
-
 end # module RelaxationExample

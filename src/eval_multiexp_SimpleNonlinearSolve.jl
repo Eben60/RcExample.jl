@@ -1,4 +1,4 @@
-using RelaxationExample, GivEmExel
+using RelaxationExample, GivEmExel, GivEmExel.SavingResults
 
 using Plots, XLSX, DataFrames
 # plotlyjs()
