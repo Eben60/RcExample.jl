@@ -67,8 +67,10 @@ function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
     results = []
     results_df = []
     errors = []
+    overview = (;)
     try
         (; df, pl0) = readdata(xlfile)
+        overview = (;pl0, subset=0)
         for (i, pm) in pairs(paramsets)
                 (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
             try
@@ -94,7 +96,7 @@ function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
         push!(errors,(;row=-1, comment="error opening of processing data file", exceptn))
         throwonerr && rethrow(exceptn)
     end
-    return (; results, errors, results_df)
+    return (; results, errors, results_df, overview)
 end
 
 calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
@@ -116,19 +118,20 @@ end
 getplots(itr) = [k => v for (k, v) in pairs(itr) if v isa Plots.Plot]
 
 
-function saveplots(results, rslt_dir; plotformat = "png", kwargs...)
-    for rs in results
-        (; subset, no, plot_annotation) = rs
-        allplots = getplots(rs)
-        singleplot = length(allplots) == 1
-        for (k, v) in allplots
-            pl = v
-            prefix = subset==no ? "fig$no" : "fig$subset-$no"
-            singleplot || (prefix *= "_$(k)_")
-            fname = "$(prefix)_$plot_annotation.$plotformat"
-            fl = joinpath(rslt_dir, fname)
-            savefig(pl, fl)
-        end
+function saveplots(rs, rslt_dir; plotformat = "png", kwargs...)
+    # rs = Dict(pairs(rs))
+    subset = get(rs, :subset, 0)
+    no = get(rs, :no, subset)
+    plot_annotation = get(rs, :plot_annotation, "")
+    allplots = getplots(rs)
+    singleplot = length(allplots) == 1
+    for (k, v) in allplots
+        pl = v
+        prefix = subset==no ? "fig$no" : "fig$subset-$no"
+        singleplot || (prefix *= "_$(k)_")
+        fname = "$(prefix)_$plot_annotation.$plotformat"
+        fl = joinpath(rslt_dir, fname)
+        savefig(pl, fl)
     end
     return nothing
 end
