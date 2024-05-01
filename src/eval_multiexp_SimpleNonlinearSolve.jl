@@ -1,5 +1,5 @@
 using Unitful, DataFrames, XLSX, Plots
-using GivEmExel, GivEmExel.SavingResults
+using GivEmExel #, GivEmExel.SavingResults
 using RelaxationExample
 
 # plotlyjs()
