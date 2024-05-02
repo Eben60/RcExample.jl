@@ -1,3 +1,37 @@
 row = 3: third discharge – 3
-Errored: MethodError(Float64, (missing,), 0x0000000000007c29) 
+Errored: MethodError(Float64, (missing,), 0x0000000000007be0)
+-------- backtrace --------
+_broadcast_getindex_evalf(f::Type{Float64}, args::Missing) at broadcast.jl:709
+_broadcast_getindex at broadcast.jl:682 [inlined]
+getindex at broadcast.jl:636 [inlined]
+macro expansion at broadcast.jl:1004 [inlined]
+macro expansion at simdloop.jl:77 [inlined]
+copyto! at broadcast.jl:1003 [inlined]
+copyto! at broadcast.jl:956 [inlined]
+copy at broadcast.jl:928 [inlined]
+materialize(bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{1}, Nothing, Type{Float64}, Tuple{Vector{Union{Missing, Float64}}}}) at broadcast.jl:903
+timerange(df0::DataFrame, t1::Int64, t2::Int64) at RelaxationExample.jl:20
+_proc_dataspan(df::DataFrame, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}) at RelaxationExample.jl:51
+proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}; throwonerr::Bool) at RelaxationExample.jl:97
+proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}) at RelaxationExample.jl:86
+top-level scope at eval_multiexp_SimpleNonlinearSolve.jl:22
+eval at boot.jl:385 [inlined]
+include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String) at loading.jl:2076
+include_string(m::Module, txt::String, fname::String) at loading.jl:2086
+invokelatest(::Any, ::Any, ::Vararg{Any}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, @NamedTuple{}}) at essentials.jl:892
+invokelatest(::Any, ::Any, ::Vararg{Any}) at essentials.jl:889
+inlineeval(m::Module, code::String, code_line::Int64, code_column::Int64, file::String; softscope::Bool) at eval.jl:263
+kwcall(::@NamedTuple{softscope::Bool}, ::typeof(VSCodeServer.inlineeval), m::Module, code::String, code_line::Int64, code_column::Int64, file::String) at eval.jl:260
+(::VSCodeServer.var"#69#74"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:181
+withpath(f::VSCodeServer.var"#69#74"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams}, path::String) at repl.jl:274
+(::VSCodeServer.var"#68#73"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:179
+hideprompt(f::VSCodeServer.var"#68#73"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams}) at repl.jl:38
+(::VSCodeServer.var"#67#72"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:150
+with_logstate(f::Function, logstate::Any) at logging.jl:515
+with_logger at logging.jl:627 [inlined]
+(::VSCodeServer.var"#66#71"{VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:255
+#invokelatest#2 at essentials.jl:892 [inlined]
+invokelatest(::Any) at essentials.jl:889
+(::VSCodeServer.var"#64#65")() at eval.jl:34
+________________________________________________________________________________
 
