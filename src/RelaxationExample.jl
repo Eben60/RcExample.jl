@@ -204,11 +204,15 @@ end
 function save_plots(overview, subsets_results, rslt_dir, paramsets)
     plots = get(overview, :plots, nothing)
     isnothing(plots) && (plots=(;))
+    ps1 = paramsets[1]
+    ntkwargs = haskey(ps1, :plotformat) ? (; plotformat = ps1.plotformat) : (;)
     if !isempty(plots)
         plots = merge(plots, (;subset=0))
-        saveplots(plots, rslt_dir; paramsets[1]...)
+        saveplots(plots, rslt_dir; ntkwargs...)
     end
-    saveplots.(subsets_results, Ref(rslt_dir); (paramsets[1]...));
+    for subs in subsets_results
+        saveplots(subs.rs, rslt_dir; ntkwargs...);
+    end
     return nothing
 end
 
@@ -217,7 +221,7 @@ function save_results(results, xlfile, paramsets)
     (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
     dfs = save_dfs(overview, subsets_results, outf)
     save_plots(overview, subsets_results, rslt_dir, paramsets)
-    
+    write_errors(errf, errors)
     return (;dfs)
 end
 
@@ -225,7 +229,6 @@ function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; t
     results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
     (; overview, subsets_results, errors) = results
     (;dfs) = save_results(results, xlfile, paramsets)
-
     return (; overview, subsets_results, errors, dfs) 
 end
 
