@@ -125,11 +125,11 @@ end
 function procwhole(xlfile, datafile, paramsets)
     (; df, pl0) = _readdata(xlfile)
     plots = (; pl0, comment="overview plot", subset=0)
-    df1 = DataFrame([(; a=1, b=2)])
-    df2 = DataFrame([(; c=3, d=4)])
-    dataframes = (; df1, df2)
+    # df1 = DataFrame([(; a=1, b=2)])
+    # df2 = DataFrame([(; c=3, d=4)])
+    # dataframes = (; df1, df2)
     data = (; df)
-    return (;plots, dataframes, data)
+    return (;plots, dataframes=nothing, data)
 end
 
 function procsubset(i, pm_subset, overview, args...) 
@@ -192,6 +192,8 @@ function save_results(results, xlfile)
     (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
     subsets_df = combine2df(subsets_results)
     overview_dfs = get(overview, :dataframes, (;))
+    isnothing(overview_dfs) && (overview_dfs=(;))
+    dfs = (;)
     if !isnothing(subsets_df) 
         subsets_df = prepare_xl(subsets_df)
         dfs = merge(overview_dfs, (;SubsetsRslt=subsets_df))
@@ -199,19 +201,15 @@ function save_results(results, xlfile)
 
     isempty(dfs) || write_xl_tables(outf, dfs)
 
-    # if !isnothing(subsets_df)
-    #     subsets_df = prepare_xl(subsets_df);
-    #     XLSX.writetable(outf, "SubsetsRslt" => subsets_df; overwrite=true)
-    # end
-    return (;subsets_df)
+    return (;dfs)
 end
 
 function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
     results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
     (; overview, subsets_results, errors) = results
-    (;subsets_df) = save_results(results, xlfile)
+    (;dfs) = save_results(results, xlfile)
 
-    return (; overview, subsets_results, errors, subsets_df) 
+    return (; overview, subsets_results, errors, dfs) 
 end
 
 
