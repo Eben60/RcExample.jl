@@ -6,8 +6,8 @@ using RelaxationExample
 
 f = "data/MissingData.xlsx";
 
-# f = "data/RelaxationExampleData.xlsx"
-f = "data/BrokenData.xlsx";
+f = "data/RelaxationExampleData.xlsx"
+# f = "data/BrokenData.xlsx";
 fl = joinpath(@__DIR__, "..", f);
 
 
@@ -19,7 +19,7 @@ fl = joinpath(@__DIR__, "..", f);
 pst = exper_paramsets((;), df_exp, df_setup);
 (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(fl)
 
-(;results, errors, results_df, overview) = proc_data(fl, nothing, pst) # ; throwonerr=false);
+(;results, errors, results_df, overview) = _proc_data(fl, nothing, pst) # ; throwonerr=false);
 
 if !isempty(results_df)
     df2save = prepare_xl(results_df);

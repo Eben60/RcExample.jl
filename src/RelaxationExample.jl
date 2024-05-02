@@ -8,7 +8,8 @@ using NonlinearSolve
 using Unitful: ϵ0
 
 export timerange, nl_lsq_fit, expmodel,  proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
-export _proc_dataspan
+export procwhole, procsubset
+export _proc_dataspan, _proc_data
 
 
 DATATABLENAME = "data"
@@ -83,7 +84,7 @@ function _finalize_plot!(pl, params)
     return pl
 end
 
-function proc_data(xlfile, datafile, paramsets; throwonerr=false)
+function _proc_data(xlfile, datafile, paramsets; throwonerr=false)
     results = []
     results_df = []
     errors = []
@@ -119,6 +120,40 @@ function proc_data(xlfile, datafile, paramsets; throwonerr=false)
         throwonerr && rethrow(exceptn)
     end
     return (; results, errors, results_df, overview)
+end
+
+procsubset(args...) = nothing
+
+function procwhole(xlfile, datafile, paramsets)
+    (; df, pl0) = _readdata(xlfile)
+    return (;pl0, df, subset=0)
+end
+
+
+function proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
+    # results = []
+    # results_df = []
+    subs_results = []
+    errors = []
+    overview = (;)
+    try
+        overview = procwhole_fn(xlfile, datafile, paramsets)
+        for (i, pm_subset) in pairs(paramsets)
+            try
+                push!(subs_results, procsubset_fn(i, pm_subset, overview, xlfile, datafile, paramsets))
+            catch exceptn
+                back_trace = stacktrace(catch_backtrace())
+                comment = get(pm_subset, :comment, "")
+                push!(errors, (;row=i, comment, exceptn, back_trace))
+                throwonerr && rethrow(exceptn)
+            end    
+        end     
+    catch exceptn
+        back_trace = stacktrace(catch_backtrace())
+        push!(errors,(;row=-1, comment="error opening of processing data file", exceptn, back_trace))
+        throwonerr && rethrow(exceptn)
+    end
+    return (; overview, subs_results, errors)
 end
 
 end # module RelaxationExample
