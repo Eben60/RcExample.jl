@@ -10,11 +10,14 @@ copyto! at broadcast.jl:1003 [inlined]
 copyto! at broadcast.jl:956 [inlined]
 copy at broadcast.jl:928 [inlined]
 materialize(bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{1}, Nothing, Type{Float64}, Tuple{Vector{Union{Missing, Float64}}}}) at broadcast.jl:903
-timerange(df0::DataFrame, t1::Int64, t2::Int64) at RelaxationExample.jl:20
-_proc_dataspan(df::DataFrame, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}) at RelaxationExample.jl:51
-proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}; throwonerr::Bool) at RelaxationExample.jl:97
-proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}) at RelaxationExample.jl:86
-top-level scope at eval_multiexp_SimpleNonlinearSolve.jl:22
+timerange(df0::DataFrame, t1::Int64, t2::Int64) at RelaxationExample.jl:22
+_proc_dataspan(df::DataFrame, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}) at RelaxationExample.jl:53
+procsubset(::Int64, ::@NamedTuple{area::Quantity{Float64, 𝐋², Unitful.FreeUnits{(cm²,), 𝐋², nothing}}, Vunit::Unitful.FreeUnits{(mV,), 𝐋² 𝐌 𝐈⁻¹ 𝐓⁻³, nothing}, timeunit::Unitful.FreeUnits{(s,), 𝐓, nothing}, Cunit::Unitful.FreeUnits{(nF,), 𝐈² 𝐓⁴ 𝐋⁻² 𝐌⁻¹, nothing}, R::Quantity{Float64, 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, Unitful.FreeUnits{(GΩ,), 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, nothing}}, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, ϵ::Float64, no::Int64, plot_annotation::String, comment::String}, ::@NamedTuple{plots::@NamedTuple{pl0::Plots.Plot{Plots.GRBackend}, plot_annotation::String}, dataframes::Nothing, data::@NamedTuple{df::DataFrame}}, ::String, ::Vararg{Any}) at RelaxationExample.jl:139
+proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::typeof(procwhole), procsubset_fn::typeof(procsubset); throwonerr::Bool) at RelaxationExample.jl:160
+kwcall(::@NamedTuple{throwonerr::Bool}, ::typeof(proc_data), xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::Function, procsubset_fn::Function) at RelaxationExample.jl:152
+proc_n_save(xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function; ntargs::@NamedTuple{}, throwonerr::Bool, paramtables::@NamedTuple{setup::String, exper::String}) at RelaxationExample.jl:236
+proc_n_save(xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function) at RelaxationExample.jl:229
+top-level scope at test_with_generic.jl:9
 eval at boot.jl:385 [inlined]
 include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String) at loading.jl:2076
 include_string(m::Module, txt::String, fname::String) at loading.jl:2086

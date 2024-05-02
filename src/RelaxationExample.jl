@@ -11,6 +11,7 @@ export timerange, nl_lsq_fit, expmodel,  proc_data, saveplots, getplots #, anyfy
 export procwhole, procsubset, combine2df, proc_n_save, write_xl_tables
 export _proc_dataspan, _proc_data
 
+gr()
 
 DATATABLENAME = "data"
 

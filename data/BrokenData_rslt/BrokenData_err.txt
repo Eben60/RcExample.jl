@@ -9,10 +9,13 @@ openxlsx(f::XLSX.var"#29#30"{Nothing, Nothing, Bool, Bool, Bool, Nothing, Bool, 
 openxlsx at read.jl:128 [inlined]
 #readtable#28 at read.jl:604 [inlined]
 kwcall(::@NamedTuple{infer_eltypes::Bool}, ::typeof(XLSX.readtable), source::String, sheet::String) at read.jl:603
-_readdata(fl::String) at RelaxationExample.jl:63
-_proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}; throwonerr::Bool) at RelaxationExample.jl:92
-_proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}) at RelaxationExample.jl:86
-top-level scope at eval_multiexp_SimpleNonlinearSolve.jl:22
+_readdata(fl::String) at RelaxationExample.jl:65
+procwhole at RelaxationExample.jl:127 [inlined]
+proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::typeof(procwhole), procsubset_fn::typeof(procsubset); throwonerr::Bool) at RelaxationExample.jl:157
+kwcall(::@NamedTuple{throwonerr::Bool}, ::typeof(proc_data), xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::Function, procsubset_fn::Function) at RelaxationExample.jl:152
+proc_n_save(xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function; ntargs::@NamedTuple{}, throwonerr::Bool, paramtables::@NamedTuple{setup::String, exper::String}) at RelaxationExample.jl:236
+proc_n_save(xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function) at RelaxationExample.jl:229
+top-level scope at test_with_generic.jl:9
 eval at boot.jl:385 [inlined]
 include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String) at loading.jl:2076
 include_string(m::Module, txt::String, fname::String) at loading.jl:2086
