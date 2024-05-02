@@ -124,7 +124,7 @@ end
 
 function procwhole(xlfile, datafile, paramsets)
     (; df, pl0) = _readdata(xlfile)
-    plots = (; pl0, comment="overview plot")
+    plots = (; pl0, plot_annotation="overview plot")
     # df1 = DataFrame([(; a=1, b=2)])
     # df2 = DataFrame([(; c=3, d=4)])
     # dataframes = (; df1, df2)
@@ -189,7 +189,7 @@ end
 
 function save_dfs(overview, subsets_results, outf)
     subsets_df = combine2df(subsets_results)
-    overview_dfs = get(overview, :dataframes, (;))
+    overview_dfs = get(overview, :dataframes, nothing)
     isnothing(overview_dfs) && (overview_dfs=(;))
     dfs = (;)
     if !isnothing(subsets_df) 
@@ -201,10 +201,21 @@ function save_dfs(overview, subsets_results, outf)
     return dfs
 end
 
-function save_results(results, xlfile)
+function save_plots(overview, subsets_results, rslt_dir, paramsets)
+    plots = get(overview, :plots, nothing)
+    isnothing(plots) && (plots=(;))
+    if !isempty(plots)
+        plots = merge(plots, (;subset=0))
+        saveplots(plots, rslt_dir; paramsets[1]...)
+    end
+    return nothing
+end
+
+function save_results(results, xlfile, paramsets)
     (; overview, subsets_results, errors) = results
     (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
     dfs = save_dfs(overview, subsets_results, outf)
+    save_plots(overview, subsets_results, rslt_dir, paramsets)
 
     return (;dfs)
 end
@@ -212,7 +223,7 @@ end
 function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
     results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
     (; overview, subsets_results, errors) = results
-    (;dfs) = save_results(results, xlfile)
+    (;dfs) = save_results(results, xlfile, paramsets)
 
     return (; overview, subsets_results, errors, dfs) 
 end
