@@ -1,14 +1,14 @@
 module RelaxationExample
 
 using Plots, XLSX, DataFrames, Unitful
-using GivEmExel
+using GivEmExel, GivEmExel.SavingResults
 
 using NonlinearSolve
 
 using Unitful: ϵ0
 
 export timerange, nl_lsq_fit, expmodel,  proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
-export procwhole, procsubset
+export procwhole, procsubset, combine2df, proc_n_save
 export _proc_dataspan, _proc_data
 
 
@@ -139,21 +139,19 @@ function procsubset(i, pm_subset, overview, args...)
     c = (τ / R) 
     c = c |> Cunit 
     d = _calc_thickness(c, ϵ, area)
-    rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
-    return (;rs, rs_row)
+    df_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
+    return (;rs, df_row)
 end
 
 function proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
-    # results = []
-    # results_df = []
-    subs_results = []
+    subsets_results = []
     errors = []
     overview = (;)
     try
         overview = procwhole_fn(xlfile, datafile, paramsets)
         for (i, pm_subset) in pairs(paramsets)
             try
-                push!(subs_results, procsubset_fn(i, pm_subset, overview, xlfile, datafile, paramsets))
+                push!(subsets_results, procsubset_fn(i, pm_subset, overview, xlfile, datafile, paramsets))
             catch exceptn
                 back_trace = stacktrace(catch_backtrace())
                 comment = get(pm_subset, :comment, "")
@@ -166,7 +164,38 @@ function proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; thr
         push!(errors,(;row=-1, comment="error opening of processing data file", exceptn, back_trace))
         throwonerr && rethrow(exceptn)
     end
-    return (; overview, subs_results, errors)
+    return (; overview, subsets_results, errors)
 end
+
+function combine2df(subsets_results)
+    rows = []
+    for sr in subsets_results
+        r = get(sr, :df_row, nothing)
+        isnothing(r) || push!(rows, r)
+    end
+    isempty(rows) && return nothing
+    return DataFrame(rows)
+end
+
+function save_results(results, xlfile)
+    (; overview, subsets_results, errors) = results
+    (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
+    subsets_df = combine2df(subsets_results)
+    df2save = nothing
+    if !isnothing(subsets_df)
+        df2save = prepare_xl(subsets_df);
+        XLSX.writetable(outf, "SubsetsRslt" => df2save; overwrite=true)
+    end
+    return (;df2save)
+end
+
+function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
+    results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
+    (; overview, subsets_results, errors) = results
+    (;df2save) = save_results(results, xlfile)
+
+    return (; overview, subsets_results, errors, df2save) 
+end
+
 
 end # module RelaxationExample
