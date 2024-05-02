@@ -122,13 +122,26 @@ function _proc_data(xlfile, datafile, paramsets; throwonerr=false)
     return (; results, errors, results_df, overview)
 end
 
-procsubset(args...) = nothing
-
 function procwhole(xlfile, datafile, paramsets)
     (; df, pl0) = _readdata(xlfile)
     return (;pl0, df, subset=0)
 end
 
+function procsubset(i, pm_subset, overview, args...) 
+    (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm_subset
+    df = overview.df
+    rslt = _proc_dataspan(df, t_start, t_stop)
+    (;a, τ, sol, pl) = rslt
+    _finalize_plot!(pl, pm_subset)
+    rs = (;subset=i, no, a, τ, sol, pl, plot_annotation)
+    a *= Vunit
+    τ *= timeunit
+    c = (τ / R) 
+    c = c |> Cunit 
+    d = _calc_thickness(c, ϵ, area)
+    rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
+    return (;rs, rs_row)
+end
 
 function proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
     # results = []
