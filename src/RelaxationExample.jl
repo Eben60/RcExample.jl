@@ -8,7 +8,7 @@ using NonlinearSolve
 using Unitful: ϵ0
 
 export timerange, nl_lsq_fit, expmodel,  proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
-export procwhole, procsubset, combine2df, proc_n_save
+export procwhole, procsubset, combine2df, proc_n_save, write_xl_tables
 export _proc_dataspan, _proc_data
 
 
@@ -124,12 +124,17 @@ end
 
 function procwhole(xlfile, datafile, paramsets)
     (; df, pl0) = _readdata(xlfile)
-    return (;pl0, df, subset=0)
+    plots = (; pl0, comment="overview plot", subset=0)
+    df1 = DataFrame([(; a=1, b=2)])
+    df2 = DataFrame([(; c=3, d=4)])
+    dataframes = (; df1, df2)
+    data = (; df)
+    return (;plots, dataframes, data)
 end
 
 function procsubset(i, pm_subset, overview, args...) 
     (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm_subset
-    df = overview.df
+    df = overview.data.df
     rslt = _proc_dataspan(df, t_start, t_stop)
     (;a, τ, sol, pl) = rslt
     _finalize_plot!(pl, pm_subset)
@@ -177,24 +182,36 @@ function combine2df(subsets_results)
     return DataFrame(rows)
 end
 
+function write_xl_tables(fl, nt_dfs; overwrite=true)
+    ps = [string(k)=>v for (k, v) in pairs(nt_dfs)]
+    XLSX.writetable(fl, ps; overwrite)
+end
+
 function save_results(results, xlfile)
     (; overview, subsets_results, errors) = results
     (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
     subsets_df = combine2df(subsets_results)
-    df2save = nothing
-    if !isnothing(subsets_df)
-        df2save = prepare_xl(subsets_df);
-        XLSX.writetable(outf, "SubsetsRslt" => df2save; overwrite=true)
+    overview_dfs = get(overview, :dataframes, (;))
+    if !isnothing(subsets_df) 
+        subsets_df = prepare_xl(subsets_df)
+        dfs = merge(overview_dfs, (;SubsetsRslt=subsets_df))
     end
-    return (;df2save)
+
+    isempty(dfs) || write_xl_tables(outf, dfs)
+
+    # if !isnothing(subsets_df)
+    #     subsets_df = prepare_xl(subsets_df);
+    #     XLSX.writetable(outf, "SubsetsRslt" => subsets_df; overwrite=true)
+    # end
+    return (;subsets_df)
 end
 
 function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
     results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
     (; overview, subsets_results, errors) = results
-    (;df2save) = save_results(results, xlfile)
+    (;subsets_df) = save_results(results, xlfile)
 
-    return (; overview, subsets_results, errors, df2save) 
+    return (; overview, subsets_results, errors, subsets_df) 
 end
 
 
