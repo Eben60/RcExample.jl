@@ -7,7 +7,9 @@ using NonlinearSolve
 
 using Unitful: ϵ0
 
-export timerange, nl_lsq_fit, expmodel, proc_dataspan, proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
+export timerange, nl_lsq_fit, expmodel,  proc_data, saveplots, getplots #, anyfy_col!, prepare_xl, sep_unit # , proc_dataset
+export _proc_dataspan
+
 
 DATATABLENAME = "data"
 
@@ -43,7 +45,7 @@ function expmodel(x, u, t₀=0)
     return a * exp(-(x-t₀)/τ) # + y0 
 end
 
-function proc_dataspan(df, t_start, t_stop)
+function _proc_dataspan(df, t_start, t_stop)
     t_start = t_start |> ustrip
     t_stop = t_stop |> ustrip
     (; ts, ys) = timerange(df, t_start, t_stop);
@@ -57,7 +59,7 @@ function proc_dataspan(df, t_start, t_stop)
 end
 
 
-function readdata(fl)
+function _readdata(fl)
     df = DataFrame(XLSX.readtable(fl, DATATABLENAME; infer_eltypes=true))
     ts = df[!, :ts];
     ys = df[!, :ys];
@@ -65,45 +67,9 @@ function readdata(fl)
     return (; df, pl0)
 end
 
-function proc_data(xlfile, unusedfile, paramsets; throwonerr=false)
-    results = []
-    results_df = []
-    errors = []
-    overview = (;)
-    try
-        (; df, pl0) = readdata(xlfile)
-        overview = (;pl0, subset=0)
-        for (i, pm) in pairs(paramsets)
-                (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
-            try
-                rslt = proc_dataspan(df, t_start, t_stop)
-                (;a, τ, sol, pl) = rslt
-                finalize_plot!(pl, pm)
-                rs = (;subset=i, no, a, τ, sol, pl, plot_annotation)
-                a *= Vunit
-                τ *= timeunit
-                c = (τ / R) 
-                c = c |> Cunit 
-                d = calc_thickness(c, ϵ, area)
-                rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
-                push!(results, rs)
-                push!(results_df, rs_row)
-            catch exceptn
-                push!(errors, (;row=i, comment, exceptn))
-                throwonerr && rethrow(exceptn)
-            end
-        end
-        results_df=DataFrame(results_df)
-    catch exceptn
-        push!(errors,(;row=-1, comment="error opening of processing data file", exceptn))
-        throwonerr && rethrow(exceptn)
-    end
-    return (; results, errors, results_df, overview)
-end
+_calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
 
-calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
-
-function finalize_plot!(pl, params)
+function _finalize_plot!(pl, params)
     (; Vunit, timeunit, plot_annotation) = params
     sz = (800, 600)
     xunit = timeunit |> string
@@ -115,6 +81,44 @@ function finalize_plot!(pl, params)
         title = "$plot_annotation",
         )
     return pl
+end
+
+function proc_data(xlfile, datafile, paramsets; throwonerr=false)
+    results = []
+    results_df = []
+    errors = []
+    overview = (;)
+    try
+        (; df, pl0) = _readdata(xlfile)
+        overview = (;pl0, subset=0)
+        for (i, pm) in pairs(paramsets)
+                (; area, Vunit, timeunit, Cunit, R, ϵ, no, plot_annotation, comment, t_start, t_stop) = pm
+            try
+                rslt = _proc_dataspan(df, t_start, t_stop)
+                (;a, τ, sol, pl) = rslt
+                _finalize_plot!(pl, pm)
+                rs = (;subset=i, no, a, τ, sol, pl, plot_annotation)
+                a *= Vunit
+                τ *= timeunit
+                c = (τ / R) 
+                c = c |> Cunit 
+                d = _calc_thickness(c, ϵ, area)
+                rs_row = (;no, a, τ, c, d, R, ϵ, comment, t_start, t_stop)
+                push!(results, rs)
+                push!(results_df, rs_row)
+            catch exceptn
+                back_trace = catch_backtrace()
+                push!(errors, (;row=i, comment, exceptn, back_trace))
+                throwonerr && rethrow(exceptn)
+            end
+        end
+        results_df=DataFrame(results_df)
+    catch exceptn
+        back_trace = catch_backtrace()
+        push!(errors,(;row=-1, comment="error opening of processing data file", exceptn, back_trace))
+        throwonerr && rethrow(exceptn)
+    end
+    return (; results, errors, results_df, overview)
 end
 
 end # module RelaxationExample
