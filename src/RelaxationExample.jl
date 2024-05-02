@@ -107,14 +107,14 @@ function proc_data(xlfile, datafile, paramsets; throwonerr=false)
                 push!(results, rs)
                 push!(results_df, rs_row)
             catch exceptn
-                back_trace = catch_backtrace()
+                back_trace = stacktrace(catch_backtrace())
                 push!(errors, (;row=i, comment, exceptn, back_trace))
                 throwonerr && rethrow(exceptn)
             end
         end
         results_df=DataFrame(results_df)
     catch exceptn
-        back_trace = catch_backtrace()
+        back_trace = stacktrace(catch_backtrace())
         push!(errors,(;row=-1, comment="error opening of processing data file", exceptn, back_trace))
         throwonerr && rethrow(exceptn)
     end
