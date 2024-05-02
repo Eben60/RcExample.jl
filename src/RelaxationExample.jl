@@ -225,7 +225,13 @@ function save_results(results, xlfile, paramsets)
     return (;dfs)
 end
 
-function proc_n_save(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr=false)
+function proc_n_save(xlfile, datafile, procwhole_fn, procsubset_fn;
+        ntargs = (;),
+        throwonerr=false, 
+        paramtables=(;setup="params_setup", exper="params_experiment"),
+        )
+    (;df_setup, df_exp) = read_xl_paramtables(xlfile; paramtables)
+    paramsets = exper_paramsets(ntargs, df_exp, df_setup);
     results = proc_data(xlfile, datafile, paramsets, procwhole_fn, procsubset_fn; throwonerr)
     (; overview, subsets_results, errors) = results
     (;dfs) = save_results(results, xlfile, paramsets)
