@@ -124,7 +124,7 @@ end
 
 function procwhole(xlfile, datafile, paramsets)
     (; df, pl0) = _readdata(xlfile)
-    plots = (; pl0, comment="overview plot", subset=0)
+    plots = (; pl0, comment="overview plot")
     # df1 = DataFrame([(; a=1, b=2)])
     # df2 = DataFrame([(; c=3, d=4)])
     # dataframes = (; df1, df2)
@@ -187,9 +187,7 @@ function write_xl_tables(fl, nt_dfs; overwrite=true)
     XLSX.writetable(fl, ps; overwrite)
 end
 
-function save_results(results, xlfile)
-    (; overview, subsets_results, errors) = results
-    (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
+function save_dfs(overview, subsets_results, outf)
     subsets_df = combine2df(subsets_results)
     overview_dfs = get(overview, :dataframes, (;))
     isnothing(overview_dfs) && (overview_dfs=(;))
@@ -200,6 +198,13 @@ function save_results(results, xlfile)
     end
 
     isempty(dfs) || write_xl_tables(outf, dfs)
+    return dfs
+end
+
+function save_results(results, xlfile)
+    (; overview, subsets_results, errors) = results
+    (;fname, f_src, src_dir, rslt_dir, outf, errf) = out_paths(xlfile)
+    dfs = save_dfs(overview, subsets_results, outf)
 
     return (;dfs)
 end
