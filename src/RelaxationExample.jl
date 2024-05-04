@@ -1,11 +1,12 @@
 module RelaxationExample
 
 using Plots, XLSX, DataFrames, Unitful
-using GivEmExel, GivEmExel.SavingResults
+using GivEmExel, GivEmExel.SavingResults, GivEmExel.InternalArgParse
 using NonlinearSolve
 using Unitful: ϵ0
 
 export procwhole, procsubset
+export pp0, pps
 
 gr()
 
@@ -106,5 +107,21 @@ function procsubset(i, pm_subset, overview, args...)
     return (;rs, df_row)
 end
 
+
+prompt = "RelaxationExample> "
+promptcolor = "cyan"
+batchfilename = "rex"
+
+@static if Sys.iswindows()
+    ext = ".bat"
+else
+    ext = ".sh"
+end
+
+batchfilename *= ext
+
+include("init_cli_options.jl")
+
 include("precompile.jl")
+
 end # module RelaxationExample
