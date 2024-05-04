@@ -106,4 +106,5 @@ function procsubset(i, pm_subset, overview, args...)
     return (;rs, df_row)
 end
 
+include("precompile.jl")
 end # module RelaxationExample
