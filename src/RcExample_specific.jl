@@ -1,5 +1,4 @@
-
-gr()
+using CairoMakie
 
 DATATABLENAME = "data"
 
@@ -43,7 +42,12 @@ function proc_dataspan(df, t_start, t_stop)
     t₀ᵢ = t_start
     (;sol, fit) = nl_lsq_fit(expmodel, [aᵢ, τᵢ], ts, ys, t₀ᵢ)
     a, τ = sol.u
-    pl = plot(ts, [ys, fit]; label = ["experiment" "fit"])
+    # pl = plot(ts, [ys, fit]; label = ["experiment" "fit"])
+
+    f, ax, l1 = lines(ts, ys)
+    lines!(ax, ts, fit)
+    pl = f
+
     return (;a, τ, sol, fit, pl)
 end
 
@@ -51,23 +55,29 @@ function readdata(fl)
     df = DataFrame(XLSX.readtable(fl, DATATABLENAME; infer_eltypes=true))
     ts = df[!, :ts];
     ys = df[!, :ys];
-    pl0 = plot(ts, ys)
+    # pl0 = plot(ts, ys)
+    # f, _, _ = lines(ts, ys)
+    ts = Float64.(ts)
+    ys = Float64.(ys)
+    f, ax, l1 = lines(ts, ys)
+    pl0 = f
+
     return (; df, pl0)
 end
 
 calc_thickness(C, ϵ, area) = ϵ * ϵ0 * area / C |> u"µm"
 
 function finalize_plot!(pl, params)
-    (; Vunit, timeunit, plot_annotation) = params
-    sz = (800, 600)
-    xunit = timeunit |> string
-    yunit = Vunit |> string
-    pl = plot!(pl; 
-        size=sz, 
-        xlabel = "time [$xunit]", 
-        ylabel = "Voltage [$yunit]", 
-        title = "$plot_annotation",
-        )
+    # (; Vunit, timeunit, plot_annotation) = params
+    # sz = (800, 600)
+    # xunit = timeunit |> string
+    # yunit = Vunit |> string
+    # pl = plot!(pl; 
+    #     size=sz, 
+    #     xlabel = "time [$xunit]", 
+    #     ylabel = "Voltage [$yunit]", 
+    #     title = "$plot_annotation",
+    #     )
     return pl
 end
 

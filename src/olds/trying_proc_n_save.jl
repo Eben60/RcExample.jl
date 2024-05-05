@@ -23,14 +23,14 @@ paramsets = exper_paramsets(cliargs, df_exp, df_setup)
 
 # results = proc_data(xlfile, nothing, paramsets, procwhole, nothing;)
 
-# rslt = proc_n_save(procwhole, procsubset; paramsets, xlfile);
+rslt = proc_n_save(procwhole, procsubset; paramsets, xlfile);
 ; #, paramsets=[(;plotformat="svg", throwonerr=true)]);
 
-function procwhsubset(i, pm_subset, overview, xlfile, datafiles, paramsets)
-    overview = procwhole(xlfile, datafiles, paramsets)
-    return procsubset(i, pm_subset, overview)
-end
+# function procwhsubset(i, pm_subset, overview, xlfile, datafiles, paramsets)
+#     overview = procwhole(xlfile, datafiles, paramsets)
+#     return procsubset(i, pm_subset, overview)
+# end
 
-rslt = proc_n_save(procwhole, nothing; paramsets, xlfile);
+# rslt = proc_n_save(procwhole, nothing; paramsets, xlfile);
 
-rslt = proc_n_save(nothing, procwhsubset; paramsets, xlfile);
+# rslt = proc_n_save(nothing, procwhsubset; paramsets, xlfile);
