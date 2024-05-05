@@ -71,7 +71,7 @@ function finalize_plot!(pl, params)
     return pl
 end
 
-function procwhole(xlfile, datafile, paramsets)
+function procwhole(xlfile, datafiles, paramsets)
     (; df, pl0) = readdata(xlfile)
     plots = (; pl0, plot_annotation="overview plot")
     # df1 = DataFrame([(; a=1, b=2)])
