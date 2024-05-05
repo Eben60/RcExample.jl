@@ -1,12 +1,12 @@
 using Unitful, DataFrames, XLSX, Plots
 using GivEmExel, GivEmExel.SavingResults
-using RelaxationExample
+using RcExample
 
 # plotlyjs()
 
 f = "data/MissingData.xlsx";
 
-f = "data/RelaxationExampleData.xlsx"
+f = "data/RcExampleData.xlsx"
 # f = "data/BrokenData.xlsx";
 fl = joinpath(@__DIR__, "..", f);
 

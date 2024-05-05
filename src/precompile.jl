@@ -1,6 +1,6 @@
 using PrecompileTools: @setup_workload, @compile_workload 
 
-# testfiles = ["data/RelaxationExampleData.xlsx",
+# testfiles = ["data/RcExampleData.xlsx",
 # "data/MissingData.xlsx",
 # "data/BrokenData.xlsx",
 # ]

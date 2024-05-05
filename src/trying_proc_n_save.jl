@@ -1,11 +1,11 @@
 # using Unitful, DataFrames, XLSX, Plots
 using GivEmExel.SavingResults
 using GivEmExel
-using RelaxationExample
+using RcExample
 
 f = "data/MissingData.xlsx";
 
-f = "data/RelaxationExampleData.xlsx"
+f = "data/RcExampleData.xlsx"
 # f = "data/BrokenData.xlsx";
 fl = joinpath(@__DIR__, "..", f);
 

@@ -40,7 +40,7 @@ next_file = let
         interactive=InteractiveUsage(;
             color = "cyan", 
             introduction="press <ENTER> to process next file, of -a<ENTER> to abort ",
-            prompt="RelaxationExample> ",
+            prompt="RcExample> ",
             ), 
         )
     
@@ -57,7 +57,7 @@ exelfile_prompt = let
         interactive=InteractiveUsage(;
             color = "cyan", 
             introduction="press <ENTER>, then select Excel file.",
-            prompt="RelaxationExample> ",
+            prompt="RcExample> ",
             ), 
         )
     pp
