@@ -1,6 +1,6 @@
-name = "RelaxationExample"
+name = "RcExample"
 uuid = "860fe72d-ead5-40a6-888e-a6a0dafefe10"
-authors = ["Ben Elkin <8xe8n-cm@online.de>"]
+authors = ["Eben60"]
 version = "0.1.0"
 
 [deps]

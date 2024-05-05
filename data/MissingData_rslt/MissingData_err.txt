@@ -1,5 +1,5 @@
 row = 3: third discharge – 3
-Errored: MethodError(Float64, (missing,), 0x0000000000007be0)
+Errored: MethodError(Float64, (missing,), 0x0000000000007bdd)
 -------- backtrace --------
 _broadcast_getindex_evalf(f::Type{Float64}, args::Missing) at broadcast.jl:709
 _broadcast_getindex at broadcast.jl:682 [inlined]
@@ -10,31 +10,23 @@ copyto! at broadcast.jl:1003 [inlined]
 copyto! at broadcast.jl:956 [inlined]
 copy at broadcast.jl:928 [inlined]
 materialize(bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{1}, Nothing, Type{Float64}, Tuple{Vector{Union{Missing, Float64}}}}) at broadcast.jl:903
-timerange(df0::DataFrame, t1::Int64, t2::Int64) at RelaxationExample.jl:17
-proc_dataspan(df::DataFrame, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}) at RelaxationExample.jl:48
-procsubset(::Int64, ::@NamedTuple{plotformat::String, throwonerr::Bool, area::Quantity{Float64, 𝐋², Unitful.FreeUnits{(cm²,), 𝐋², nothing}}, Vunit::Unitful.FreeUnits{(mV,), 𝐋² 𝐌 𝐈⁻¹ 𝐓⁻³, nothing}, timeunit::Unitful.FreeUnits{(s,), 𝐓, nothing}, Cunit::Unitful.FreeUnits{(nF,), 𝐈² 𝐓⁴ 𝐋⁻² 𝐌⁻¹, nothing}, R::Quantity{Float64, 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, Unitful.FreeUnits{(GΩ,), 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, nothing}}, t_start::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, ϵ::Float64, no::Int64, plot_annotation::String, comment::String}, ::@NamedTuple{plots::@NamedTuple{pl0::Plots.Plot{Plots.GRBackend}, plot_annotation::String}, dataframes::Nothing, data::@NamedTuple{df::DataFrame}}, ::String, ::Vararg{Any}) at RelaxationExample.jl:96
-proc_data(xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::typeof(procwhole), procsubset_fn::typeof(procsubset); throwonerr::Bool) at SavingResults.jl:113
-kwcall(::@NamedTuple{throwonerr::Bool}, ::typeof(GivEmExel.SavingResults.proc_data), xlfile::String, datafile::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::Function, procsubset_fn::Function) at SavingResults.jl:105
-proc_n_save(xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function; ntargs::@NamedTuple{plotformat::String, throwonerr::Bool}, paramtables::@NamedTuple{setup::String, exper::String}) at SavingResults.jl:189
-kwcall(::@NamedTuple{ntargs::@NamedTuple{plotformat::String, throwonerr::Bool}}, ::typeof(proc_n_save), xlfile::String, datafile::Nothing, procwhole_fn::Function, procsubset_fn::Function) at SavingResults.jl:182
-top-level scope at test_with_generic.jl:9
+timerange(df0::DataFrames.DataFrame, t1::Int64, t2::Int64) at RcExample.jl:18
+proc_dataspan(df::DataFrames.DataFrame, t_start::Unitful.Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Unitful.Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}) at RcExample.jl:49
+procsubset(::Int64, ::@NamedTuple{plotformat::String, throwonerr::Bool, area::Unitful.Quantity{Float64, 𝐋², Unitful.FreeUnits{(cm²,), 𝐋², nothing}}, Vunit::Unitful.FreeUnits{(mV,), 𝐋² 𝐌 𝐈⁻¹ 𝐓⁻³, nothing}, timeunit::Unitful.FreeUnits{(s,), 𝐓, nothing}, Cunit::Unitful.FreeUnits{(nF,), 𝐈² 𝐓⁴ 𝐋⁻² 𝐌⁻¹, nothing}, R::Unitful.Quantity{Float64, 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, Unitful.FreeUnits{(GΩ,), 𝐋² 𝐌 𝐈⁻² 𝐓⁻³, nothing}}, t_start::Unitful.Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, t_stop::Unitful.Quantity{Int64, 𝐓, Unitful.FreeUnits{(s,), 𝐓, nothing}}, ϵ::Float64, no::Int64, plot_annotation::String, comment::String}, ::@NamedTuple{plots::@NamedTuple{pl0::Plots.Plot{Plots.GRBackend}, plot_annotation::String}, dataframes::Nothing, data::@NamedTuple{df::DataFrames.DataFrame}}, ::String, ::Vararg{Any}) at RcExample.jl:97
+proc_data(xlfile::String, datafiles::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::typeof(procwhole), procsubset_fn::typeof(procsubset); throwonerr::Bool) at SavingResults.jl:112
+kwcall(::@NamedTuple{throwonerr::Bool}, ::typeof(GivEmExel.SavingResults.proc_data), xlfile::String, datafiles::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}, procwhole_fn::Function, procsubset_fn::Function) at SavingResults.jl:104
+proc_n_save(procwhole_fn::Function, procsubset_fn::Function; xlfile::String, datafiles::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}) at SavingResults.jl:190
+proc_n_save at SavingResults.jl:181 [inlined]
+#fn#1 at rcex.jl:15 [inlined]
+kwcall(::@NamedTuple{xlfile::String, datafiles::Nothing, paramsets::Vector{NamedTuple{(:plotformat, :throwonerr, :area, :Vunit, :timeunit, :Cunit, :R, :t_start, :t_stop, :ϵ, :no, :plot_annotation, :comment)}}}, ::typeof(fn)) at rcex.jl:15
+full_interact(pp0::GivEmExel.InternalArgParse.ArgumentParser, pps::@NamedTuple{gen_options::Nothing, spec_options::Nothing, exelfile_prompt::GivEmExel.InternalArgParse.ArgumentParser, next_file::GivEmExel.InternalArgParse.ArgumentParser}, proc_data_fn::typeof(fn); basedir::Nothing, paramtables::@NamedTuple{setup::String, exper::String}, getexel::Bool, getdata::@NamedTuple{dialogtype::Symbol}) at interact.jl:126
+kwcall(::@NamedTuple{getexel::Bool, getdata::@NamedTuple{dialogtype::Symbol}}, ::typeof(full_interact), pp0::GivEmExel.InternalArgParse.ArgumentParser, pps::@NamedTuple{gen_options::Nothing, spec_options::Nothing, exelfile_prompt::GivEmExel.InternalArgParse.ArgumentParser, next_file::GivEmExel.InternalArgParse.ArgumentParser}, proc_data_fn::Function) at interact.jl:77
+top-level scope at rcex.jl:17
 eval at boot.jl:385 [inlined]
 include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String) at loading.jl:2076
-include_string(m::Module, txt::String, fname::String) at loading.jl:2086
-invokelatest(::Any, ::Any, ::Vararg{Any}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, @NamedTuple{}}) at essentials.jl:892
-invokelatest(::Any, ::Any, ::Vararg{Any}) at essentials.jl:889
-inlineeval(m::Module, code::String, code_line::Int64, code_column::Int64, file::String; softscope::Bool) at eval.jl:263
-kwcall(::@NamedTuple{softscope::Bool}, ::typeof(VSCodeServer.inlineeval), m::Module, code::String, code_line::Int64, code_column::Int64, file::String) at eval.jl:260
-(::VSCodeServer.var"#69#74"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:181
-withpath(f::VSCodeServer.var"#69#74"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams}, path::String) at repl.jl:274
-(::VSCodeServer.var"#68#73"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:179
-hideprompt(f::VSCodeServer.var"#68#73"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams}) at repl.jl:38
-(::VSCodeServer.var"#67#72"{Bool, Bool, Bool, Module, String, Int64, Int64, String, VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:150
-with_logstate(f::Function, logstate::Any) at logging.jl:515
-with_logger at logging.jl:627 [inlined]
-(::VSCodeServer.var"#66#71"{VSCodeServer.ReplRunCodeRequestParams})() at eval.jl:255
-#invokelatest#2 at essentials.jl:892 [inlined]
-invokelatest(::Any) at essentials.jl:889
-(::VSCodeServer.var"#64#65")() at eval.jl:34
+_include(mapexpr::Function, mod::Module, _path::String) at loading.jl:2136
+include(mod::Module, _path::String) at Base.jl:495
+exec_options(opts::Base.JLOptions) at client.jl:318
+_start() at client.jl:552
 ________________________________________________________________________________
 

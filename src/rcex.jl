@@ -1,4 +1,4 @@
-using RelaxationExample
+using RcExample
 using GivEmExel, GivEmExel.SavingResults #, GivEmExel.InternalArgParse
 
 # using RelaxationExample: pp0, pps
@@ -14,5 +14,5 @@ using GivEmExel, GivEmExel.SavingResults #, GivEmExel.InternalArgParse
 
 fn(; kwargs...) = proc_n_save(procwhole, procsubset; kwargs...)
 
-fi = full_interact(RelaxationExample.pp0, RelaxationExample.pps, fn; getexel=true, getdata=(; dialogtype = :none))
+fi = full_interact(pp0, pps, fn; getexel=true, getdata=(; dialogtype = :none))
 

@@ -5,15 +5,19 @@ using PrecompileTools: @setup_workload, @compile_workload
 # "data/BrokenData.xlsx",
 # ]
 
+
+
 @setup_workload begin
-    testfiles = ["data/MissingData.xlsx",
+    testfiles = ["MissingData.xlsx",
         ]
+    sourcefolder = normpath(joinpath(@__DIR__, "..", "data"))
     cliargs = (;plotformat="none", throwonerr=false)
     d = Base.Filesystem.tempdir()
 
     @compile_workload begin
-        for f in testfiles
-            fnm = splitpath(f)[end]
+        for fnm in testfiles
+            # fnm = splitpath(f)[end]
+            f = joinpath(sourcefolder, fnm)
             fl = joinpath(d, fnm)
             cp(f, fl; force=true)
             (;df_setup, df_exp) = read_xl_paramtables(fl; paramtables=(;setup="params_setup", exper="params_experiment"));

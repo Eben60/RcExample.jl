@@ -1,4 +1,4 @@
-module RelaxationExample
+module RcExample
 
 using Plots, XLSX, DataFrames, Unitful
 using GivEmExel, GivEmExel.SavingResults, GivEmExel.InternalArgParse
@@ -108,9 +108,9 @@ function procsubset(i, pm_subset, overview, args...)
 end
 
 
-prompt = "RelaxationExample> "
+prompt = "RcExample> "
 promptcolor = "cyan"
-batchfilename = "rex"
+batchfilename = "rcex"
 
 @static if Sys.iswindows()
     ext = ".bat"
@@ -124,4 +124,4 @@ include("init_cli_options.jl")
 
 include("precompile.jl")
 
-end # module RelaxationExample
+end # module RcExample
